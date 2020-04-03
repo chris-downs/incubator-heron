@@ -65,6 +65,7 @@ public class PackingPlanProtoSerializer {
     return PackingPlans.Resource.newBuilder()
         .setCpu(resource.getCpu())
         .setRam(resource.getRam().asBytes())
-        .setDisk(resource.getDisk().asBytes());
+        .setDisk(resource.getDisk().asBytes())
+        .setGpu(resource.getGpu());
   }
 }

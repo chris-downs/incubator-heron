@@ -63,6 +63,10 @@ public final class KubernetesContext extends Context {
   public static final String HERON_KUBERNETES_CONTAINER_VOLUME_MOUNT_PATH =
       "heron.kubernetes.container.volumeMount.path";
 
+  // gpu resource keys
+  public static final String HERON_KUBERNETES_GPU_BRAND =
+      "heron.kubernetes.gpu.brand";
+
   private KubernetesContext() {
   }
 
@@ -131,6 +135,15 @@ public final class KubernetesContext extends Context {
     final String name = getContainerVolumeName(config);
     final String path = getContainerVolumeMountPath(config);
     return isNotEmpty(name) && isNotEmpty(path);
+  }
+
+  public static boolean hasGpuBrand(Config config) {
+    String brand = getGpuBrand(config);
+    return isNotEmpty(brand);
+  }
+
+  public static String getGpuBrand(Config config) {
+    return config.getStringValue(HERON_KUBERNETES_GPU_BRAND);
   }
 
   private static boolean isNotEmpty(String s) {

@@ -52,7 +52,7 @@ public class RoundRobinPackingTest extends CommonPackingTests {
 
   private Resource getDefaultPadding() {
     return new Resource(RoundRobinPacking.DEFAULT_CPU_PADDING_PER_CONTAINER,
-        RoundRobinPacking.DEFAULT_RAM_PADDING_PER_CONTAINER, ByteAmount.ZERO);
+        RoundRobinPacking.DEFAULT_RAM_PADDING_PER_CONTAINER, ByteAmount.ZERO, 0);
   }
 
   @Before
@@ -110,7 +110,9 @@ public class RoundRobinPackingTest extends CommonPackingTests {
     ByteAmount containerRam = ByteAmount.fromGigabytes(10);
     ByteAmount containerDisk = ByteAmount.fromGigabytes(20);
     double containerCpu = 30;
-    Resource containerResource = new Resource(containerCpu, containerRam, containerDisk);
+    int containerGpu = 0;
+    Resource containerResource =
+        new Resource(containerCpu, containerRam, containerDisk, containerGpu);
 
     topologyConfig.setContainerRamRequested(containerRam);
     topologyConfig.setContainerDiskRequested(containerDisk);
@@ -151,8 +153,10 @@ public class RoundRobinPackingTest extends CommonPackingTests {
     ByteAmount containerRam = ByteAmount.fromGigabytes(10);
     ByteAmount containerDisk = ByteAmount.fromGigabytes(20);
     double containerCpu = 30;
+    int containerGpu = 0;
     ByteAmount containerRamPadding = ByteAmount.fromMegabytes(512);
-    Resource containerResource = new Resource(containerCpu, containerRam, containerDisk);
+    Resource containerResource =
+        new Resource(containerCpu, containerRam, containerDisk, containerGpu);
 
     topologyConfig.setContainerRamRequested(containerRam);
     topologyConfig.setContainerDiskRequested(containerDisk);
@@ -396,9 +400,11 @@ public class RoundRobinPackingTest extends CommonPackingTests {
     ByteAmount containerRam = ByteAmount.fromGigabytes(6); // max container resource is 6G
     ByteAmount containerDisk = ByteAmount.fromGigabytes(20);
     double containerCpu = 30;
+    int containerGpu = 0;
     ByteAmount spoutRam = ByteAmount.fromMegabytes(500);
     ByteAmount boltRam = ByteAmount.fromMegabytes(1000);
-    Resource containerResource = new Resource(containerCpu, containerRam, containerDisk);
+    Resource containerResource =
+        new Resource(containerCpu, containerRam, containerDisk, containerGpu);
 
     // Don't set container RAM
     topologyConfig.setContainerDiskRequested(containerDisk);
@@ -431,7 +437,9 @@ public class RoundRobinPackingTest extends CommonPackingTests {
     ByteAmount containerRam = ByteAmount.fromGigabytes(6); // max container resource is 6G
     ByteAmount containerDisk = ByteAmount.fromGigabytes(20);
     double containerCpu = 30;
-    Resource containerResource = new Resource(containerCpu, containerRam, containerDisk);
+    int containerGpu = 0;
+    Resource containerResource =
+        new Resource(containerCpu, containerRam, containerDisk, containerGpu);
 
     // Container RAM is not set in config
     topologyConfig.setContainerDiskRequested(containerDisk);
@@ -469,8 +477,10 @@ public class RoundRobinPackingTest extends CommonPackingTests {
     ByteAmount containerRam = ByteAmount.fromGigabytes(6); // max container resource is 6G
     ByteAmount containerDisk = ByteAmount.fromGigabytes(20);
     double containerCpu = 30;
+    int containerGpu = 0;
     ByteAmount boltRam = ByteAmount.fromGigabytes(1);
-    Resource containerResource = new Resource(containerCpu, containerRam, containerDisk);
+    Resource containerResource =
+        new Resource(containerCpu, containerRam, containerDisk, containerGpu);
 
     // Don't set container RAM
     topologyConfig.setContainerDiskRequested(containerDisk);
@@ -510,7 +520,9 @@ public class RoundRobinPackingTest extends CommonPackingTests {
     ByteAmount containerRam = ByteAmount.fromGigabytes(10);
     ByteAmount containerDisk = ByteAmount.fromGigabytes(20);
     double containerCpu = 30;
-    Resource containerResource = new Resource(containerCpu, containerRam, containerDisk);
+    int containerGpu = 0;
+    Resource containerResource =
+        new Resource(containerCpu, containerRam, containerDisk, containerGpu);
     ByteAmount boltRam = ByteAmount.fromGigabytes(10);
 
     // Don't set container RAM

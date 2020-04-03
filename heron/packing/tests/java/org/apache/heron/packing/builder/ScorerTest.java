@@ -39,7 +39,7 @@ public class ScorerTest {
   @Before
   public void init() throws ResourceExceededException {
     Resource containerCapacity
-        = new Resource(1000, ByteAmount.fromGigabytes(100), ByteAmount.fromGigabytes(100));
+        = new Resource(1000, ByteAmount.fromGigabytes(100), ByteAmount.fromGigabytes(100), 10);
     testContainers = new Container[] {
         new Container(1, containerCapacity, Resource.EMPTY_RESOURCE),
         new Container(3, containerCapacity, Resource.EMPTY_RESOURCE),

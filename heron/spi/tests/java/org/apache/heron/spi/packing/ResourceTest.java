@@ -31,38 +31,46 @@ public class ResourceTest {
 
   @Test
   public void testSubtract() {
-    Resource firstResource = new Resource(2, TWO, TWO);
-    Resource secondResource = new Resource(1, ONE, ZERO);
+    Resource firstResource = new Resource(2, TWO, TWO, 2);
+    Resource secondResource = new Resource(1, ONE, ZERO, 1);
     Resource additionalResource = firstResource.subtractAbsolute(secondResource);
     Assert.assertEquals(1, (long) additionalResource.getCpu());
     Assert.assertEquals(ONE, additionalResource.getRam());
     Assert.assertEquals(TWO, additionalResource.getDisk());
+    Assert.assertEquals(1, additionalResource.getGpu());
   }
 
   @Test
   public void testSubtractNegative() {
-    Resource firstResource = new Resource(2, TWO, TWO);
-    Resource secondResource = new Resource(4, ByteAmount.fromBytes(3), ONE);
+    Resource firstResource = new Resource(2, TWO, TWO, 2);
+    Resource secondResource = new Resource(4, ByteAmount.fromBytes(3), ONE, 4);
     Resource additionalResource = firstResource.subtractAbsolute(secondResource);
     Assert.assertEquals(0, (long) additionalResource.getCpu());
     Assert.assertEquals(ZERO, additionalResource.getRam());
     Assert.assertEquals(ONE, additionalResource.getDisk());
+    Assert.assertEquals(0, additionalResource.getGpu());
   }
 
   @Test
   public void testPlus() {
-    Resource firstResource = new Resource(2, TWO, TWO);
-    Resource secondResource = new Resource(5, ByteAmount.fromBytes(3), ONE);
+    Resource firstResource = new Resource(2, TWO, TWO, 2);
+    Resource secondResource = new Resource(5, ByteAmount.fromBytes(3), ONE, 5);
     Resource totalResource = firstResource.plus(secondResource);
     Assert.assertEquals(7, (long) totalResource.getCpu());
     Assert.assertEquals(ByteAmount.fromBytes(5), totalResource.getRam());
     Assert.assertEquals(ByteAmount.fromBytes(3), totalResource.getDisk());
+    Assert.assertEquals(7, totalResource.getGpu());
   }
 
   @Test
   public void testDivideBy() {
-    Resource firstResource = new Resource(12, ByteAmount.fromBytes(13), ByteAmount.fromBytes(15));
-    Resource secondResource = new Resource(2, TWO, TWO);
+    Resource firstResource = new Resource(
+        12,
+        ByteAmount.fromBytes(13),
+        ByteAmount.fromBytes(15),
+        12
+    );
+    Resource secondResource = new Resource(2, TWO, TWO, 2);
     double result = firstResource.divideBy(secondResource);
     Assert.assertEquals(8, (long) result);
   }

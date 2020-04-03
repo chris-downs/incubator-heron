@@ -238,6 +238,10 @@ public class Context {
     return cfg.getByteAmountValue(Key.INSTANCE_DISK);
   }
 
+  public static Integer instanceGpu(Config cfg) {
+    return cfg.getIntegerValue(Key.INSTANCE_GPU);
+  }
+
   public static String heronHome(Config cfg) {
     return cfg.getStringValue(Key.HERON_HOME);
   }

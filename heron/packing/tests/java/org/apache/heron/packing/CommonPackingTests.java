@@ -76,7 +76,11 @@ public abstract class CommonPackingTests {
 
     Config config = PackingTestUtils.newTestConfig(this.topology);
     this.instanceDefaultResources = new Resource(
-        Context.instanceCpu(config), Context.instanceRam(config), Context.instanceDisk(config));
+        Context.instanceCpu(config),
+        Context.instanceRam(config),
+        Context.instanceDisk(config),
+        Context.instanceGpu(config)
+    );
   }
 
   protected static TopologyAPI.Topology getTopology(int spoutParallelism, int boltParallelism,
@@ -107,7 +111,8 @@ public abstract class CommonPackingTests {
   protected Resource getDefaultMaxContainerResource(int maxNumInstancesPerContainer) {
     return new Resource(this.instanceDefaultResources.getCpu() * maxNumInstancesPerContainer,
         this.instanceDefaultResources.getRam().multiply(maxNumInstancesPerContainer),
-        this.instanceDefaultResources.getDisk().multiply(maxNumInstancesPerContainer));
+        this.instanceDefaultResources.getDisk().multiply(maxNumInstancesPerContainer),
+        this.instanceDefaultResources.getGpu() * maxNumInstancesPerContainer);
   }
 
   protected Resource getDefaultUnspecifiedContainerResource(int testNumInstances,
@@ -116,7 +121,8 @@ public abstract class CommonPackingTests {
     int largestContainerSize = (int) Math.ceil((double) testNumInstances / testNumContainers);
     return new Resource(largestContainerSize + padding.getCpu(),
         ByteAmount.fromGigabytes(largestContainerSize).plus(padding.getRam()),
-        ByteAmount.fromGigabytes(largestContainerSize).plus(padding.getDisk()));
+        ByteAmount.fromGigabytes(largestContainerSize).plus(padding.getDisk()),
+        0);
   }
 
   protected PackingPlan doDefaultScalingTest(Map<String, Integer> componentChanges,

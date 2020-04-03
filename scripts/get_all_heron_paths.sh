@@ -18,7 +18,7 @@
 set -eu
 
 function query() {
-  ./output/bazel query "$@"
+  bazel query "$@"
 }
 
 set +e

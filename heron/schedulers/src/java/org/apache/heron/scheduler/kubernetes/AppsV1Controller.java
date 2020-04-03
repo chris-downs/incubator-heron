@@ -409,11 +409,36 @@ public class AppsV1Controller extends KubernetesController {
     // set container resources
     final V1ResourceRequirements resourceRequirements = new V1ResourceRequirements();
     final Map<String, Quantity> requests = new HashMap<>();
+    final Map<String, Quantity> limits = new HashMap<>();
     requests.put(KubernetesConstants.MEMORY,
         Quantity.fromString(KubernetesUtils.Megabytes(resource.getRam())));
     requests.put(KubernetesConstants.CPU,
          Quantity.fromString(Double.toString(roundDecimal(resource.getCpu(), 3))));
+
+    // https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/
+    if (resource.getGpu() > 0) {
+      if (KubernetesContext.hasGpuBrand(configuration)) {
+        String gpuBrand = KubernetesContext.getGpuBrand(configuration).toLowerCase();
+        if ("nvidia".equals(gpuBrand)) {
+          limits.put(KubernetesConstants.NVIDIA_GPU,
+              Quantity.fromString(String.valueOf(resource.getGpu())));
+        } else if ("amd".equals(gpuBrand)) {
+          limits.put(KubernetesConstants.AMD_GPU,
+              Quantity.fromString(String.valueOf(resource.getGpu())));
+        } else {
+          throw new TopologySubmissionException(
+              String.format("Invalid GPU brand '%s'. Valid brands are 'nvidia' or 'amd'.",
+                  gpuBrand));
+        }
+      } else {
+        throw new TopologySubmissionException(
+            String.format("Config must specify %s when GPUs are requested.",
+                KubernetesContext.HERON_KUBERNETES_GPU_BRAND));
+      }
+    }
+
     resourceRequirements.setRequests(requests);
+    resourceRequirements.setLimits(limits);
     container.setResources(resourceRequirements);
 
     // set container ports

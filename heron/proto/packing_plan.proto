@@ -28,6 +28,7 @@ message Resource {
   required double cpu = 1;
   required int64 ram = 2;
   required int64 disk = 3;
+  required int32 gpu = 4;
 }
 
 message InstancePlan {

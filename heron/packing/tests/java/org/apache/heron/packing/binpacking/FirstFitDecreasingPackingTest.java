@@ -98,13 +98,16 @@ public class FirstFitDecreasingPackingTest extends CommonPackingTests {
     ByteAmount containerRam = ByteAmount.fromGigabytes(10);
     ByteAmount containerDisk = ByteAmount.fromGigabytes(20);
     double containerCpu = 30;
-    Resource containerResource = new Resource(containerCpu, containerRam, containerDisk);
+    int containerGpu = 0;
+    Resource containerResource =
+        new Resource(containerCpu, containerRam, containerDisk, containerGpu);
 
     Resource padding = PackingUtils.finalizePadding(
-        new Resource(containerCpu, containerRam, containerDisk),
+        new Resource(containerCpu, containerRam, containerDisk, containerGpu),
         new Resource(PackingUtils.DEFAULT_CONTAINER_CPU_PADDING,
             PackingUtils.DEFAULT_CONTAINER_RAM_PADDING,
-            PackingUtils.DEFAULT_CONTAINER_RAM_PADDING),
+            PackingUtils.DEFAULT_CONTAINER_RAM_PADDING,
+            PackingUtils.DEFAULT_CONTAINER_GPU_PADDING),
         PackingUtils.DEFAULT_CONTAINER_PADDING_PERCENTAGE);
 
     topologyConfig.setContainerRamRequested(containerRam);
@@ -155,7 +158,9 @@ public class FirstFitDecreasingPackingTest extends CommonPackingTests {
     ByteAmount containerRam = ByteAmount.fromGigabytes(15);
     ByteAmount containerDisk = ByteAmount.fromGigabytes(20);
     double containerCpu = 30;
-    Resource containerResource = new Resource(containerCpu, containerRam, containerDisk);
+    int containerGpu = 0;
+    Resource containerResource =
+        new Resource(containerCpu, containerRam, containerDisk, containerGpu);
 
     // Explicit set component RAM map
     ByteAmount boltRam = ByteAmount.fromGigabytes(1);
@@ -164,6 +169,7 @@ public class FirstFitDecreasingPackingTest extends CommonPackingTests {
     topologyConfig.setContainerRamRequested(containerRam);
     topologyConfig.setContainerDiskRequested(containerDisk);
     topologyConfig.setContainerCpuRequested(containerCpu);
+    topologyConfig.setContainerGpuRequested(containerGpu);
     topologyConfig.setComponentRam(BOLT_NAME, boltRam);
     topologyConfig.setComponentRam(SPOUT_NAME, spoutRam);
     topology = getTopology(spoutParallelism, boltParallelism, topologyConfig);

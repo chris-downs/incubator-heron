@@ -203,7 +203,7 @@ public class RoundRobinPacking implements IPacking, IRepacking {
         // Currently not yet support disk config for different components, just use the default.
         ByteAmount instanceDisk = instanceDiskDefault;
 
-        Resource resource = new Resource(instanceCpu, instanceRam, instanceDisk);
+        Resource resource = new Resource(instanceCpu, instanceRam, instanceDisk, 0);
 
         // Insert it into the map
         instancePlanMap.put(instanceId, new PackingPlan.InstancePlan(instanceId, resource));
@@ -231,7 +231,7 @@ public class RoundRobinPacking implements IPacking, IRepacking {
 
       Resource resource = new Resource(
           Math.max(containerCpu, containerResourceHint.getCpu()),
-          containerRam, containerDisk);
+          containerRam, containerDisk, 0);
       PackingPlan.ContainerPlan containerPlan = new PackingPlan.ContainerPlan(
           containerId, new HashSet<>(instancePlanMap.values()), resource);
 
@@ -452,7 +452,8 @@ public class RoundRobinPacking implements IPacking, IRepacking {
         TopologyUtils.getConfigWithDefault(topologyConfig, TOPOLOGY_CONTAINER_RAM_REQUESTED,
             NOT_SPECIFIED_BYTE_AMOUNT),
         TopologyUtils.getConfigWithDefault(topologyConfig, TOPOLOGY_CONTAINER_DISK_REQUESTED,
-            NOT_SPECIFIED_BYTE_AMOUNT));
+            NOT_SPECIFIED_BYTE_AMOUNT),
+        0);
   }
 
   /**

@@ -77,6 +77,7 @@ public class NomadSchedulerTest {
   private static final double CPU_RESOURCE = 100.0;
   private static final ByteAmount MEMORY_RESOURCE = ByteAmount.fromMegabytes(100);
   private static final ByteAmount DISK_RESOURCE = ByteAmount.fromMegabytes(1000);
+  private static final int GPU_RESOURCE = 0;
   private static final int HERON_NOMAD_CORE_FREQ_MAPPING = 1000;
   private static final String CORE_PACKAGE_URI = "core-package-uri";
   private static final Boolean USE_CORE_PACKAGE_URI = true;
@@ -271,7 +272,7 @@ public class NomadSchedulerTest {
         CONTAINER_INDEX, new HashSet<>(), Mockito.mock(Resource.class));
     Optional<PackingPlan.ContainerPlan> plan = Optional.of(containerPlan);
 
-    Resource resource = new Resource(CPU_RESOURCE, MEMORY_RESOURCE, DISK_RESOURCE);
+    Resource resource = new Resource(CPU_RESOURCE, MEMORY_RESOURCE, DISK_RESOURCE, GPU_RESOURCE);
 
     scheduler.initialize(this.mockConfig, this.mockRuntime);
     Mockito.doReturn(new TaskGroup()).when(scheduler).getTaskGroup(
@@ -292,7 +293,7 @@ public class NomadSchedulerTest {
   public void testGetTaskGroup() {
     Set<PackingPlan.ContainerPlan> containers = new HashSet<>();
     containers.add(Mockito.mock(PackingPlan.ContainerPlan.class));
-    Resource resource = new Resource(CPU_RESOURCE, MEMORY_RESOURCE, DISK_RESOURCE);
+    Resource resource = new Resource(CPU_RESOURCE, MEMORY_RESOURCE, DISK_RESOURCE, GPU_RESOURCE);
 
     PackingPlan.ContainerPlan containerPlan = new PackingPlan.ContainerPlan(
         CONTAINER_INDEX, new HashSet<>(), Mockito.mock(Resource.class));
@@ -317,7 +318,7 @@ public class NomadSchedulerTest {
 
     PowerMockito.mockStatic(SchedulerUtils.class);
 
-    Resource resource = new Resource(CPU_RESOURCE, MEMORY_RESOURCE, DISK_RESOURCE);
+    Resource resource = new Resource(CPU_RESOURCE, MEMORY_RESOURCE, DISK_RESOURCE, GPU_RESOURCE);
 
     PowerMockito.when(SchedulerUtils.executorCommandArgs(
         Mockito.any(), Mockito.any(), Mockito.anyMap(), Mockito.anyString()))
@@ -398,7 +399,7 @@ public class NomadSchedulerTest {
 
     PowerMockito.mockStatic(SchedulerUtils.class);
 
-    Resource resource = new Resource(CPU_RESOURCE, MEMORY_RESOURCE, DISK_RESOURCE);
+    Resource resource = new Resource(CPU_RESOURCE, MEMORY_RESOURCE, DISK_RESOURCE, GPU_RESOURCE);
 
     PowerMockito.when(SchedulerUtils.executorCommandArgs(
         Mockito.any(), Mockito.any(), Mockito.anyMap(), Mockito.anyString()))
@@ -478,7 +479,7 @@ public class NomadSchedulerTest {
 
     PowerMockito.mockStatic(SchedulerUtils.class);
 
-    Resource resource = new Resource(CPU_RESOURCE, MEMORY_RESOURCE, DISK_RESOURCE);
+    Resource resource = new Resource(CPU_RESOURCE, MEMORY_RESOURCE, DISK_RESOURCE, GPU_RESOURCE);
 
     PowerMockito.when(SchedulerUtils.executorCommandArgs(
         Mockito.any(), Mockito.any(), Mockito.anyMap(), Mockito.anyString()))

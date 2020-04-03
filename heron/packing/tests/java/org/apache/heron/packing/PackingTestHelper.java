@@ -89,18 +89,20 @@ public final class PackingTestHelper {
     // what the tester desired. We can extend this to permit passing custom resource requirements
     // as needed.
     Resource defaultInstanceResource = new Resource(1,
-        ByteAmount.fromMegabytes(192), ByteAmount.fromMegabytes(1));
+        ByteAmount.fromMegabytes(192), ByteAmount.fromMegabytes(1), 0);
 
     Map<String, Resource> componentResourceMap = PackingUtils.getComponentResourceMap(
         toParallelismMap(previousPackingPlan, addInstances, removeInstances).keySet(),
-        new HashMap<>(), new HashMap<>(), new HashMap<>(), defaultInstanceResource);
+        new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>(),
+        defaultInstanceResource);
 
     builder.setDefaultInstanceResource(defaultInstanceResource);
     builder.setRequestedComponentResource(componentResourceMap);
     builder.setMaxContainerResource(new Resource(
         instanceCount,
         ByteAmount.fromMegabytes(192).multiply(instanceCount),
-        ByteAmount.fromMegabytes(instanceCount)));
+        ByteAmount.fromMegabytes(instanceCount),
+        0));
     builder.setInstanceConstraints(Collections.singletonList(new MinRamConstraint()));
     builder.setPackingConstraints(Collections.singletonList(new ResourceConstraint()));
 

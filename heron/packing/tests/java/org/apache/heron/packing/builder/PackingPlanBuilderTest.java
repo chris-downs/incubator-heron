@@ -54,11 +54,11 @@ public class PackingPlanBuilderTest {
   public void init() {
     testContainers = new ArrayList<>();
     testContainers.add(new Container(3, null,
-        new Resource(5, ByteAmount.fromGigabytes(5), ByteAmount.fromGigabytes(5))));
+        new Resource(5, ByteAmount.fromGigabytes(5), ByteAmount.fromGigabytes(5), 5)));
     testContainers.add(new Container(6, null,
-        new Resource(20, ByteAmount.fromGigabytes(20), ByteAmount.fromGigabytes(20))));
+        new Resource(20, ByteAmount.fromGigabytes(20), ByteAmount.fromGigabytes(20), 20)));
     testContainers.add(new Container(4, null,
-        new Resource(20, ByteAmount.fromGigabytes(20), ByteAmount.fromGigabytes(20))));
+        new Resource(20, ByteAmount.fromGigabytes(20), ByteAmount.fromGigabytes(20), 20)));
   }
 
   @Test
@@ -122,7 +122,8 @@ public class PackingPlanBuilderTest {
    */
   @Test
   public void testGetContainers() {
-    Resource padding = new Resource(1.0, ByteAmount.fromGigabytes(1), ByteAmount.fromGigabytes(1));
+    Resource padding =
+        new Resource(1.0, ByteAmount.fromGigabytes(1), ByteAmount.fromGigabytes(1), 1);
     Map<Integer, List<InstanceId>> packing = new HashMap<>();
     packing.put(7, Arrays.asList(
         new InstanceId("spout", 1, 0),
@@ -147,7 +148,7 @@ public class PackingPlanBuilderTest {
   private static PackingPlan generatePacking(Map<Integer, List<InstanceId>> basePacking)
       throws RuntimeException {
     Resource resource
-        = new Resource(2.0, ByteAmount.fromGigabytes(6), ByteAmount.fromGigabytes(25));
+        = new Resource(2.0, ByteAmount.fromGigabytes(6), ByteAmount.fromGigabytes(25), 0);
 
     Set<PackingPlan.ContainerPlan> containerPlans = new HashSet<>();
 
@@ -162,11 +163,13 @@ public class PackingPlanBuilderTest {
         switch (componentName) {
           case "bolt":
             instanceResource
-                = new Resource(1.0, ByteAmount.fromGigabytes(2), ByteAmount.fromGigabytes(10));
+                = new Resource(1.0, ByteAmount.fromGigabytes(2),
+                ByteAmount.fromGigabytes(10), 0);
             break;
           case "spout":
             instanceResource
-                = new Resource(1.0, ByteAmount.fromGigabytes(3), ByteAmount.fromGigabytes(10));
+                = new Resource(1.0, ByteAmount.fromGigabytes(3),
+                ByteAmount.fromGigabytes(10), 1);
             break;
           default:
             throw new RuntimeException(String.format("%s is not a valid component name",

@@ -157,11 +157,13 @@ static heron::proto::system::PackingPlan* GenerateDummyPackingPlan(int num_stmgr
   instanceResource->set_ram(1);
   instanceResource->set_cpu(1);
   instanceResource->set_disk(1);
+  instanceResource->set_gpu(1);
 
   heron::proto::system::Resource* containerRequiredResource = new heron::proto::system::Resource();
   containerRequiredResource->set_ram(10);
   containerRequiredResource->set_cpu(10);
   containerRequiredResource->set_disk(10);
+  containerRequiredResource->set_gpu(10);
 
   sp_int32 task_id = 0;
   sp_int32 component_index = 0;
@@ -178,6 +180,7 @@ static heron::proto::system::PackingPlan* GenerateDummyPackingPlan(int num_stmgr
     requiredResource->set_cpu(containerRequiredResource->cpu());
     requiredResource->set_ram(containerRequiredResource->ram());
     requiredResource->set_disk(containerRequiredResource->disk());
+    requiredResource->set_gpu(containerRequiredResource->gpu());
     container_map_[i] = containerPlan;
   }
 
@@ -192,6 +195,7 @@ static heron::proto::system::PackingPlan* GenerateDummyPackingPlan(int num_stmgr
     resource->set_cpu(instanceResource->cpu());
     resource->set_ram(instanceResource->ram());
     resource->set_disk(instanceResource->disk());
+    resource->set_gpu(instanceResource->gpu());
     if (++container_index == num_stmgrs_) {
       container_index = 0;
     }
@@ -209,6 +213,7 @@ static heron::proto::system::PackingPlan* GenerateDummyPackingPlan(int num_stmgr
     resource->set_cpu(instanceResource->cpu());
     resource->set_ram(instanceResource->ram());
     resource->set_disk(instanceResource->disk());
+    resource->set_gpu(instanceResource->gpu());
     if (++container_index == num_stmgrs_) {
       container_index = 0;
     }

@@ -28,14 +28,16 @@ public class Resource {
   private double cpu;
   private ByteAmount ram;
   private ByteAmount disk;
+  private int gpu;
 
   public static final Resource EMPTY_RESOURCE
-      = new Resource(0.0, ByteAmount.ZERO, ByteAmount.ZERO);
+      = new Resource(0.0, ByteAmount.ZERO, ByteAmount.ZERO, 0);
 
-  public Resource(double cpu, ByteAmount ram, ByteAmount disk) {
+  public Resource(double cpu, ByteAmount ram, ByteAmount disk, int gpu) {
     this.cpu = cpu;
     this.ram = ram;
     this.disk = disk;
+    this.gpu = gpu;
   }
 
   @Override
@@ -62,16 +64,24 @@ public class Resource {
     return disk;
   }
 
+  public int getGpu() {
+    return gpu;
+  }
+
   public Resource cloneWithRam(ByteAmount newRam) {
-    return new Resource(this.getCpu(), newRam, this.getDisk());
+    return new Resource(this.getCpu(), newRam, this.getDisk(), this.getGpu());
   }
 
   public Resource cloneWithCpu(double newCpu) {
-    return new Resource(newCpu, this.getRam(), this.getDisk());
+    return new Resource(newCpu, this.getRam(), this.getDisk(), this.getGpu());
   }
 
   public Resource cloneWithDisk(ByteAmount newDisk) {
-    return new Resource(this.getCpu(), this.getRam(), newDisk);
+    return new Resource(this.getCpu(), this.getRam(), newDisk, this.getGpu());
+  }
+
+  public Resource cloneWithGpu(int newGpu) {
+    return new Resource(this.getCpu(), this.getRam(), this.getDisk(), newGpu);
   }
 
   /**
@@ -84,7 +94,9 @@ public class Resource {
     ByteAmount extraRam = ByteAmount.ZERO.max(ramDifference);
     ByteAmount diskDifference = this.getDisk().minus(other.getDisk());
     ByteAmount extraDisk = ByteAmount.ZERO.max(diskDifference);
-    return new Resource(extraCpu, extraRam, extraDisk);
+    int gpuDifference = this.getGpu() - other.getGpu();
+    int extraGpu = Math.max(0, gpuDifference);
+    return new Resource(extraCpu, extraRam, extraDisk, extraGpu);
   }
 
    /**
@@ -94,7 +106,8 @@ public class Resource {
     double totalCpu = this.getCpu() + other.getCpu();
     ByteAmount totalRam = this.getRam().plus(other.getRam());
     ByteAmount totalDisk = this.getDisk().plus(other.getDisk());
-    return new Resource(totalCpu, totalRam, totalDisk);
+    int totalGpu = this.getGpu() + other.getGpu();
+    return new Resource(totalCpu, totalRam, totalDisk, totalGpu);
   }
 
   /**
@@ -120,11 +133,13 @@ public class Resource {
     result = (int) (temp ^ (temp >>> 32));
     result = 31 * result + ram.hashCode();
     result = 31 * result + disk.hashCode();
+    result = 31 * result + gpu;
     return result;
   }
 
   @Override
   public String toString() {
-    return String.format("{cpu: %f, ram: %s, disk: %s}", getCpu(), getRam(), getDisk());
+    return String.format("{cpu: %f, ram: %s, disk: %s, gpu: %s}",
+        getCpu(), getRam(), getDisk(), getGpu());
   }
 }

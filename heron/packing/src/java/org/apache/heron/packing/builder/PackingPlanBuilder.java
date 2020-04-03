@@ -335,7 +335,9 @@ public class PackingPlanBuilder {
       Resource totalUsedResources = container.getTotalUsedResources();
       Resource resource = new Resource(
           Math.round(totalUsedResources.getCpu()),
-          totalUsedResources.getRam(), totalUsedResources.getDisk());
+          totalUsedResources.getRam(),
+          totalUsedResources.getDisk(),
+          totalUsedResources.getGpu());
 
       PackingPlan.ContainerPlan containerPlan =
           new PackingPlan.ContainerPlan(containerId, container.getInstances(), resource);

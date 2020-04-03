@@ -412,7 +412,7 @@ public final class FormatterUtils {
   }
 
   private static final List<String> TITLE_NAMES = Arrays.asList(
-        "component", "task ID", "CPU", "RAM (MB)", "disk (MB)");
+        "component", "task ID", "CPU", "RAM (MB)", "disk (MB)", "GPU");
 
 
   /******************************** Auxiliary functions ********************************/
@@ -472,8 +472,9 @@ public final class FormatterUtils {
     String cpu = String.valueOf(plan.getResource().getCpu());
     String ram = String.valueOf(plan.getResource().getRam().asMegabytes());
     String disk = String.valueOf(plan.getResource().getDisk().asMegabytes());
+    String gpu = String.valueOf(plan.getResource().getGpu());
     List<String> cells = Arrays.asList(
-          plan.getComponentName(), taskId, cpu, ram, disk);
+          plan.getComponentName(), taskId, cpu, ram, disk, gpu);
     Row row = new Row(cells);
     row.setStyle(style);
     row.setColor(color);
@@ -490,8 +491,9 @@ public final class FormatterUtils {
     double cpu = resource.getCpu();
     ByteAmount ram = resource.getRam();
     ByteAmount disk = resource.getDisk();
-    return String.format("CPU: %s, RAM: %s MB, Disk: %s MB",
-      cpu, ram.asMegabytes(), disk.asMegabytes());
+    int gpu = resource.getGpu();
+    return String.format("CPU: %s, RAM: %s MB, Disk: %s MB, GPU: %s",
+      cpu, ram.asMegabytes(), disk.asMegabytes(), gpu);
   }
 
   public String renderResourceUsageChange(Resource oldResource, Resource newResource) {
@@ -504,6 +506,9 @@ public final class FormatterUtils {
     long oldDisk = oldResource.getDisk().asMegabytes();
     long newDisk = newResource.getDisk().asMegabytes();
     Optional<Cell> diskUsageChange = FormatterUtils.percentageChange(oldDisk, newDisk);
+    double oldGpu = oldResource.getGpu();
+    double newGpu = newResource.getGpu();
+    Optional<Cell> gpuUsageChange = FormatterUtils.percentageChange(oldGpu, newGpu);
     String cpuUsage = String.format("CPU: %s", newCpu);
     if (cpuUsageChange.isPresent()) {
       cpuUsage += String.format(" (%s)", cpuUsageChange.get().toString(rich));
@@ -516,6 +521,10 @@ public final class FormatterUtils {
     if (diskUsageChange.isPresent()) {
       diskUsage += String.format(" (%s)", diskUsageChange.get().toString(rich));
     }
-    return String.join(", ", cpuUsage, ramUsage, diskUsage);
+    String gpuUsage = String.format("GPU: %s", newGpu);
+    if (gpuUsageChange.isPresent()) {
+      gpuUsage += String.format(" (%s)", gpuUsageChange.get().toString(rich));
+    }
+    return String.join(", ", cpuUsage, ramUsage, diskUsage, gpuUsage);
   }
 }

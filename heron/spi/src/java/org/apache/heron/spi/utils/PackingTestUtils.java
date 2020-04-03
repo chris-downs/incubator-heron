@@ -98,6 +98,7 @@ public final class PackingTestUtils {
                                                             Pair<String, Integer>... instanceInfo) {
     double cpu = 1.5;
     ByteAmount ram = ByteAmount.fromGigabytes(1);
+    int gpu = 0;
 
     Set<PackingPlan.InstancePlan> instancePlans = new HashSet<>();
     for (Pair<String, Integer> info: instanceInfo) {
@@ -105,14 +106,16 @@ public final class PackingTestUtils {
       instancePlans.add(instance);
       cpu += instance.getResource().getCpu();
       ram = ram.plus(instance.getResource().getRam());
+      gpu += instance.getResource().getGpu();
+
     }
-    Resource resource = new Resource(cpu, ram, ram);
+    Resource resource = new Resource(cpu, ram, ram, gpu);
     return new PackingPlan.ContainerPlan(containerId, instancePlans, resource);
   }
 
   public static PackingPlan.InstancePlan testInstancePlan(
       String componentName, int instanceIndex) {
-    Resource resource = new Resource(1.5, ByteAmount.fromGigabytes(2), ByteAmount.fromBytes(3));
+    Resource resource = new Resource(1.5, ByteAmount.fromGigabytes(2), ByteAmount.fromBytes(3), 0);
     return new PackingPlan.InstancePlan(new InstanceId(componentName, instanceIndex, 1), resource);
   }
 

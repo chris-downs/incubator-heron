@@ -99,7 +99,8 @@ public class PackingUtilsTest {
     Resource defaultInstanceResources = new Resource(
         Context.instanceCpu(config),
         Context.instanceRam(config),
-        Context.instanceDisk(config));
+        Context.instanceDisk(config),
+        Context.instanceGpu(config));
     Map<String, Integer> componentChanges = new HashMap<>();
     componentChanges.put("bolt", -boltScalingDown); // 1 bolt
     Resource scaledownResource = PackingUtils.computeTotalResourceChange(topology,
@@ -125,7 +126,8 @@ public class PackingUtilsTest {
     Resource defaultInstanceResources = new Resource(
         Context.instanceCpu(config),
         Context.instanceRam(config),
-        Context.instanceDisk(config));
+        Context.instanceDisk(config),
+        Context.instanceGpu(config));
     Map<String, Integer> componentChanges = new HashMap<>();
     componentChanges.put("bolt", boltScalingUp); // 5 bolts
     Resource scaleupResource = PackingUtils.computeTotalResourceChange(topology,

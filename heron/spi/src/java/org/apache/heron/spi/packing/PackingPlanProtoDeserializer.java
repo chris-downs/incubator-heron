@@ -66,7 +66,8 @@ public class PackingPlanProtoDeserializer {
     if (resource != null && resource.isInitialized()) {
       result = new Resource(resource.getCpu(),
           ByteAmount.fromBytes(resource.getRam()),
-          ByteAmount.fromBytes(resource.getDisk()));
+          ByteAmount.fromBytes(resource.getDisk()),
+          resource.getGpu());
     }
     return result;
   }

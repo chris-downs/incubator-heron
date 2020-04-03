@@ -124,6 +124,7 @@ public enum Key {
   INSTANCE_RAM              ("heron.resources.instance.ram",   ByteAmount.fromBytes(1073741824)),
   INSTANCE_CPU              ("heron.resources.instance.cpu",   1.0),
   INSTANCE_DISK             ("heron.resources.instance.disk",  ByteAmount.fromBytes(1073741824)),
+  INSTANCE_GPU              ("heron.resources.instance.gpu", 0),
 
   //keys for checkpoint management
   STATEFUL_STORAGE_CLASSNAME               ("heron.statefulstorage.classname", Type.STRING),
@@ -240,6 +241,12 @@ public enum Key {
   Key(String value, ByteAmount defaultValue) {
     this.value = value;
     this.type = Type.BYTE_AMOUNT;
+    this.defaultValue = defaultValue;
+  }
+
+  Key(String value, Integer defaultValue) {
+    this.value = value;
+    this.type = Type.INTEGER;
     this.defaultValue = defaultValue;
   }
 

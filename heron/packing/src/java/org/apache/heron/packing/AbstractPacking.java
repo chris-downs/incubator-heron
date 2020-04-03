@@ -36,6 +36,7 @@ import org.apache.heron.spi.packing.Resource;
 import static org.apache.heron.api.Config.TOPOLOGY_CONTAINER_CPU_PADDING;
 import static org.apache.heron.api.Config.TOPOLOGY_CONTAINER_CPU_REQUESTED;
 import static org.apache.heron.api.Config.TOPOLOGY_CONTAINER_DISK_REQUESTED;
+import static org.apache.heron.api.Config.TOPOLOGY_CONTAINER_GPU_REQUESTED;
 import static org.apache.heron.api.Config.TOPOLOGY_CONTAINER_MAX_NUM_INSTANCES;
 import static org.apache.heron.api.Config.TOPOLOGY_CONTAINER_PADDING_PERCENTAGE;
 import static org.apache.heron.api.Config.TOPOLOGY_CONTAINER_RAM_PADDING;
@@ -122,7 +123,8 @@ public abstract class AbstractPacking implements IPacking, IRepacking {
     this.defaultInstanceResources = new Resource(
         Context.instanceCpu(config),
         Context.instanceRam(config),
-        Context.instanceDisk(config));
+        Context.instanceDisk(config),
+        Context.instanceGpu(config));
 
     int paddingPercentage = TopologyUtils.getConfigWithDefault(topologyConfig,
         TOPOLOGY_CONTAINER_PADDING_PERCENTAGE, PackingUtils.DEFAULT_CONTAINER_PADDING_PERCENTAGE);
@@ -131,7 +133,8 @@ public abstract class AbstractPacking implements IPacking, IRepacking {
     double cpuPadding = TopologyUtils.getConfigWithDefault(topologyConfig,
         TOPOLOGY_CONTAINER_CPU_PADDING, PackingUtils.DEFAULT_CONTAINER_CPU_PADDING);
     Resource preliminaryPadding = new Resource(cpuPadding, ramPadding,
-        PackingUtils.DEFAULT_CONTAINER_DISK_PADDING);
+        PackingUtils.DEFAULT_CONTAINER_DISK_PADDING,
+        PackingUtils.DEFAULT_NUM_GPUS_PER_CONTAINER);
 
     this.maxNumInstancesPerContainer = TopologyUtils.getConfigWithDefault(topologyConfig,
         TOPOLOGY_CONTAINER_MAX_NUM_INSTANCES, PackingUtils.DEFAULT_MAX_NUM_INSTANCES_PER_CONTAINER);
@@ -144,6 +147,8 @@ public abstract class AbstractPacking implements IPacking, IRepacking {
         .multiply(maxNumInstancesPerContainer);
     ByteAmount containerDefaultDisk = this.defaultInstanceResources.getDisk()
         .multiply(maxNumInstancesPerContainer);
+    int containerDefaultGpu = this.defaultInstanceResources.getGpu()
+        * maxNumInstancesPerContainer;
 
     double containerCpu = TopologyUtils.getConfigWithDefault(topologyConfig,
         TOPOLOGY_CONTAINER_CPU_REQUESTED, containerDefaultCpu);
@@ -151,8 +156,10 @@ public abstract class AbstractPacking implements IPacking, IRepacking {
         TOPOLOGY_CONTAINER_RAM_REQUESTED, containerDefaultRam);
     ByteAmount containerDisk = TopologyUtils.getConfigWithDefault(topologyConfig,
         TOPOLOGY_CONTAINER_DISK_REQUESTED, containerDefaultDisk);
+    int containerGpu = TopologyUtils.getConfigWithDefault(topologyConfig,
+        TOPOLOGY_CONTAINER_GPU_REQUESTED, containerDefaultGpu);
     Resource containerResource = new Resource(containerCpu,
-        containerRam, containerDisk);
+        containerRam, containerDisk, containerGpu);
 
     // finalize padding
     this.padding = PackingUtils.finalizePadding(containerResource,
@@ -166,6 +173,7 @@ public abstract class AbstractPacking implements IPacking, IRepacking {
         TopologyUtils.getComponentRamMapConfig(topology),
         TopologyUtils.getComponentCpuMapConfig(topology),
         TopologyUtils.getComponentDiskMapConfig(topology),
+        TopologyUtils.getComponentGpuMapConfig(topology),
         defaultInstanceResources
     );
   }

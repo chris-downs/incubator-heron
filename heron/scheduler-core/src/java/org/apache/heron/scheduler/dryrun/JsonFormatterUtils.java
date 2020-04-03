@@ -60,6 +60,7 @@ public class JsonFormatterUtils {
     resources.put("cpu", requiredResources.getCpu());
     resources.put("ram", requiredResources.getRam().asBytes());
     resources.put("disk", requiredResources.getDisk().asBytes());
+    resources.put("gpu", requiredResources.getGpu());
 
     ObjectNode containerNode = mapper.createObjectNode();
     containerNode.put("id", containerPlan.getId());
@@ -81,6 +82,7 @@ public class JsonFormatterUtils {
     resourcesNode.put("cpu", resources.getCpu());
     resourcesNode.put("ram", resources.getRam().asBytes());
     resourcesNode.put("disk", resources.getDisk().asBytes());
+    resourcesNode.put("gpu", resources.getGpu());
 
     ObjectNode instancePlanNode = mapper.createObjectNode();
     instancePlanNode.put("component", instancePlan.getComponentName());

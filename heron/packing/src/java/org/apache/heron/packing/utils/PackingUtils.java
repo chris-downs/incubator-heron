@@ -40,7 +40,9 @@ public final class PackingUtils {
   public static final ByteAmount DEFAULT_CONTAINER_RAM_PADDING = ByteAmount.fromGigabytes(1);
   public static final ByteAmount DEFAULT_CONTAINER_DISK_PADDING = ByteAmount.fromGigabytes(1);
   public static final double DEFAULT_CONTAINER_CPU_PADDING = 1.0;
+  public static final int DEFAULT_CONTAINER_GPU_PADDING = 0;
   public static final int DEFAULT_MAX_NUM_INSTANCES_PER_CONTAINER = 10;
+  public static final int DEFAULT_NUM_GPUS_PER_CONTAINER = 0;
 
   private PackingUtils() {
   }
@@ -52,6 +54,7 @@ public final class PackingUtils {
    * @param componentRamMap user configured component ram map
    * @param componentCpuMap user configured component cpu map
    * @param componentDiskMap user configured component disk map
+   * @param componentGpuMap user configured component gpu map
    * @param defaultInstanceResource default instance resources
    * @return component resource map
    */
@@ -60,6 +63,7 @@ public final class PackingUtils {
       Map<String, ByteAmount> componentRamMap,
       Map<String, Double> componentCpuMap,
       Map<String, ByteAmount> componentDiskMap,
+      Map<String, Integer> componentGpuMap,
       Resource defaultInstanceResource) {
     Map<String, Resource> componentResourceMap = new HashMap<>();
     for (String component : components) {
@@ -69,7 +73,10 @@ public final class PackingUtils {
           defaultInstanceResource.getCpu());
       ByteAmount instanceDisk = componentDiskMap.getOrDefault(component,
           defaultInstanceResource.getDisk());
-      componentResourceMap.put(component, new Resource(instanceCpu, instanceRam, instanceDisk));
+      int instanceGpu = componentGpuMap.getOrDefault(component,
+          defaultInstanceResource.getGpu());
+      componentResourceMap.put(component,
+          new Resource(instanceCpu, instanceRam, instanceDisk, instanceGpu));
     }
 
     return componentResourceMap;
@@ -99,8 +106,8 @@ public final class PackingUtils {
         containerResource.getRam().asBytes() * paddingPercentage / 100));
     ByteAmount diskPadding = ByteAmount.fromBytes(Math.max(padding.getDisk().asBytes(),
         containerResource.getDisk().asBytes() * paddingPercentage / 100));
-
-    return new Resource(cpuPadding, ramPadding, diskPadding);
+    int gpuPadding = containerResource.getGpu(); //Don't pad GPU
+    return new Resource(cpuPadding, ramPadding, diskPadding, gpuPadding);
   }
 
   /**
@@ -132,6 +139,7 @@ public final class PackingUtils {
     double cpu = 0;
     ByteAmount ram = ByteAmount.ZERO;
     ByteAmount disk = ByteAmount.ZERO;
+    int gpu = 0;
     Map<String, ByteAmount> ramMap = TopologyUtils.getComponentRamMapConfig(topology);
     Map<String, Integer> componentsToScale = PackingUtils.getComponentsToScale(
         componentChanges, scalingDirection);
@@ -144,8 +152,9 @@ public final class PackingUtils {
       } else {
         ram = ram.plus(defaultInstanceResources.getRam().multiply(parallelismChange));
       }
+      gpu += parallelismChange * defaultInstanceResources.getGpu();
     }
-    return new Resource(cpu, ram, disk);
+    return new Resource(cpu, ram, disk, gpu);
   }
 
   public enum ScalingDirection {

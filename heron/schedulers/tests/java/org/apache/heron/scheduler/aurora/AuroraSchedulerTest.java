@@ -264,7 +264,7 @@ public class AuroraSchedulerTest {
     AuroraScheduler testScheduler = new AuroraScheduler();
     testScheduler.initialize(config, runtime);
     Resource containerResource =
-        new Resource(2.3, ByteAmount.fromGigabytes(2), ByteAmount.fromGigabytes(3));
+        new Resource(2.3, ByteAmount.fromGigabytes(2), ByteAmount.fromGigabytes(3), 0);
     Map<AuroraField, String> properties = testScheduler.createAuroraProperties(containerResource);
 
     // this part is key, the conf path in the config is absolute to the install dir, but what

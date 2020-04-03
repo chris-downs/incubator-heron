@@ -288,6 +288,27 @@ public final class TopologyUtils {
   }
 
   /**
+   * Parses the value in Config.TOPOLOGY_COMPONENT_GPUMAP,
+   * and returns a map containing only component specified.
+   * Returns a empty map if the Config is not set
+   *
+   * @param topology the topology def
+   * @return a map (componentName -&gt; gpu required)
+   */
+  public static Map<String, Integer> getComponentGpuMapConfig(TopologyAPI.Topology topology)
+      throws RuntimeException {
+    Map<String, String> configMap =
+        getComponentConfigMap(topology, Config.TOPOLOGY_COMPONENT_GPUMAP);
+    Map<String, Integer> gpuMap = new HashMap<>();
+
+    for (Map.Entry<String, String> entry : configMap.entrySet()) {
+      Integer requiredGpu = Integer.parseInt(entry.getValue());
+      gpuMap.put(entry.getKey(), requiredGpu);
+    }
+    return gpuMap;
+  }
+
+  /**
    * This is a util function to parse cpumap, rammap and diskmap. A config example:
    * "spout1:1,spout2:1,bolt1:5". The function validates component name and throws exception
    * if any component name is wrong in the config.

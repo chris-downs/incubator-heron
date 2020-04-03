@@ -54,15 +54,17 @@ public class PackingPlan {
     double maxCpu = 0;
     ByteAmount maxRam = ByteAmount.ZERO;
     ByteAmount maxDisk = ByteAmount.ZERO;
+    int maxGpu = 0;
     for (ContainerPlan containerPlan : getContainers()) {
       Resource containerResource =
           containerPlan.getScheduledResource().or(containerPlan.getRequiredResource());
       maxCpu = Math.max(maxCpu, containerResource.getCpu());
       maxRam = maxRam.max(containerResource.getRam());
       maxDisk = maxDisk.max(containerResource.getDisk());
+      maxGpu = Math.max(maxGpu, containerResource.getGpu());
     }
 
-    return new Resource(maxCpu, maxRam, maxDisk);
+    return new Resource(maxCpu, maxRam, maxDisk, maxGpu);
   }
 
   /**

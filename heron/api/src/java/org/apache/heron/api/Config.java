@@ -220,6 +220,10 @@ public class Config extends HashMap<String, Object> {
    */
   public static final String TOPOLOGY_CONTAINER_DISK_REQUESTED = "topology.container.disk";
   /**
+   * Number of GPUs per container to be reserved for this topology.
+   */
+  public static final String TOPOLOGY_CONTAINER_GPU_REQUESTED = "topology.container.gpu";
+  /**
    * Hint for max number of CPU cores per container to be reserved for this topology
    */
   public static final String TOPOLOGY_CONTAINER_MAX_CPU_HINT = "topology.container.max.cpu.hint";
@@ -268,6 +272,11 @@ public class Config extends HashMap<String, Object> {
    * spout0:12434,spout1:345353,bolt1:545356.
    */
   public static final String TOPOLOGY_COMPONENT_DISKMAP = "topology.component.diskmap";
+  /**
+   * Per component GPU requirement.  The format of this flag is something like
+   * spout0:0,spout1:0,bolt1:1
+   */
+  public static final String TOPOLOGY_COMPONENT_GPUMAP = "topology.component.gpumap";
   /**
    * Sorting strategy for FirstFitDecreasingPacking algorithm.
    * RAM_FIRST (default), or CPU_FIRST
@@ -404,6 +413,7 @@ public class Config extends HashMap<String, Object> {
     apiVars.add(TOPOLOGY_CONTAINER_CPU_REQUESTED);
     apiVars.add(TOPOLOGY_CONTAINER_DISK_REQUESTED);
     apiVars.add(TOPOLOGY_CONTAINER_RAM_REQUESTED);
+    apiVars.add(TOPOLOGY_CONTAINER_GPU_REQUESTED);
     apiVars.add(TOPOLOGY_CONTAINER_MAX_CPU_HINT);
     apiVars.add(TOPOLOGY_CONTAINER_MAX_DISK_HINT);
     apiVars.add(TOPOLOGY_CONTAINER_MAX_RAM_HINT);
@@ -602,6 +612,10 @@ public class Config extends HashMap<String, Object> {
     conf.put(Config.TOPOLOGY_CONTAINER_RAM_REQUESTED, Long.toString(nbytes.asBytes()));
   }
 
+  public static void setContainerGpuRequested(Map<String, Object> conf, int count) {
+    conf.put(Config.TOPOLOGY_CONTAINER_GPU_REQUESTED, count);
+  }
+
   public static void setContainerMaxCpuHint(Map<String, Object> conf, double ncpus) {
     conf.put(Config.TOPOLOGY_CONTAINER_MAX_CPU_HINT, Double.toString(ncpus));
   }
@@ -640,6 +654,10 @@ public class Config extends HashMap<String, Object> {
 
   public static void setComponentDiskMap(Map<String, Object> conf, String diskMap) {
     conf.put(Config.TOPOLOGY_COMPONENT_DISKMAP, diskMap);
+  }
+
+  public static void setComponentGpuMap(Map<String, Object> conf, String gpuMap) {
+    conf.put(Config.TOPOLOGY_COMPONENT_GPUMAP, gpuMap);
   }
 
   public static void setFFDSortingStrategy(Map<String, Object> conf, String sortingStrategy) {
@@ -713,6 +731,19 @@ public class Config extends HashMap<String, Object> {
       conf.put(key, newEntry);
     } else {
       String newEntry = String.format("%s:%d", component, diskInBytes.asBytes());
+      conf.put(key, newEntry);
+    }
+  }
+
+  public static void setComponentGpu(Map<String, Object> conf,
+                                     String component, int gpu) {
+    String key = Config.TOPOLOGY_COMPONENT_GPUMAP;
+    if (conf.containsKey(key)) {
+      String oldEntry = (String) conf.get(key);
+      String newEntry = String.format("%s,%s:%d", oldEntry, component, gpu);
+      conf.put(key, newEntry);
+    } else {
+      String newEntry = String.format("%s:%d", component, gpu);
       conf.put(key, newEntry);
     }
   }
@@ -908,6 +939,10 @@ public class Config extends HashMap<String, Object> {
     setContainerRamRequested(this, nbytes);
   }
 
+  public void setContainerGpuRequested(int count) {
+    setContainerGpuRequested(this, count);
+  }
+
   public void setContainerMaxCpuHint(double ncpus) {
     setContainerMaxCpuHint(this, ncpus);
   }
@@ -948,6 +983,10 @@ public class Config extends HashMap<String, Object> {
     setComponentDiskMap(this, diskMap);
   }
 
+  public void setComponentGpuMap(String gpuMap) {
+    setComponentGpuMap(this, gpuMap);
+  }
+
   public void setComponentCpu(String component, double cpu) {
     setComponentCpu(this, component, cpu);
   }
@@ -958,6 +997,10 @@ public class Config extends HashMap<String, Object> {
 
   public void setComponentDisk(String component, ByteAmount diskInBytes) {
     setComponentDisk(this, component, diskInBytes);
+  }
+
+  public void setComponentGpu(String component, int gpu) {
+    setComponentGpu(this, component, gpu);
   }
 
   public void setFFDSortingStrategy(String sortingStrategy) {

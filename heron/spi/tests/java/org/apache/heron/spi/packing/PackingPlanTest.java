@@ -46,7 +46,7 @@ public class PackingPlanTest {
 
   private static PackingPlan generatePacking(Map<Integer, List<TestInstance>> basePacking) {
     Resource resource
-        = new Resource(1.0, ByteAmount.fromGigabytes(1), ByteAmount.fromGigabytes(10));
+        = new Resource(1.0, ByteAmount.fromGigabytes(1), ByteAmount.fromGigabytes(10), 0);
 
     Set<PackingPlan.ContainerPlan> containerPlans = new HashSet<>();
 
@@ -58,7 +58,7 @@ public class PackingPlanTest {
       for (TestInstance instance : instanceList) {
         String componentName = instance.id.getComponentName();
         Resource instanceResource = new Resource(1.0,
-            ByteAmount.fromGigabytes(instance.ramInG), ByteAmount.fromGigabytes(10));
+            ByteAmount.fromGigabytes(instance.ramInG), ByteAmount.fromGigabytes(10), 0);
         instancePlans.add(new PackingPlan.InstancePlan(instance.id, instanceResource));
       }
 

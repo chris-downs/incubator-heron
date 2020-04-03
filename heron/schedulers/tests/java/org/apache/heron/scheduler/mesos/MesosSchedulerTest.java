@@ -126,8 +126,9 @@ public class MesosSchedulerTest {
     final double CPU = 0.5;
     final ByteAmount MEM = ByteAmount.fromMegabytes(100);
     final ByteAmount DISK = ByteAmount.fromMegabytes(100);
+    final int GPU = 0;
 
-    Resource containerResources = new Resource(CPU, MEM, DISK);
+    Resource containerResources = new Resource(CPU, MEM, DISK, GPU);
     PackingPlan.ContainerPlan containerPlan =
         new PackingPlan.ContainerPlan(
             0, new HashSet<PackingPlan.InstancePlan>(), containerResources);
